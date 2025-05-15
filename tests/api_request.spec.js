@@ -17,4 +17,12 @@ test.describe("API request", () => {
     const json = await response.json();
     token = json.token;
   });
+
+  test.only("Test2: Get Booking ids", async ({ request }) => {
+    const response = await request.get("/booking");
+    expect(response.ok()).toBeTruthy();
+    const json = await response.json();
+    console.log(json);
+    expect(json.length).toBeGreaterThan(0);
+  });
 });
