@@ -87,9 +87,7 @@ test.describe.serial("API request", () => {
     expect(response.status()).toBe(201);
   });
   // Get booking with a non existing id
-  test.only("Test6: Get booking with a non existing id", async ({
-    request,
-  }) => {
+  test("Test6: Get booking with a non existing id", async ({ request }) => {
     const response = await request.get(`/booking/0`);
     expect(response.status()).toBe(404);
   });
@@ -104,6 +102,20 @@ test.describe.serial("API request", () => {
         Cookie: `token=${token}`,
       },
     });
-    expect(response.status()).toBe(404);
+    expect(response.status()).toBe(400);
+  });
+  // Update existing booking without setting cookie or authorisation token
+  test("Test8: Update existing booking without setting cookie or authorisation token", async ({
+    request,
+  }) => {
+    const response = await request.put(`/booking/${bookingId}`, {
+      data: {
+        firstname: "John Fries",
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    expect(response.status()).toBe(403);
   });
 });
