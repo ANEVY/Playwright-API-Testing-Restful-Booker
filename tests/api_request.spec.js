@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 
 test.describe.serial("API request", () => {
-  //
   let token = "";
   let bookingId = 0;
 
@@ -19,13 +18,14 @@ test.describe.serial("API request", () => {
     const json = await response.json();
     token = json.token;
   });
-
+  // Get Bookings
   test("Test1: Get Booking ids", async ({ request }) => {
     const response = await request.get("/booking");
     expect(response.ok()).toBeTruthy();
     const json = await response.json();
     expect(json.length).toBeGreaterThan(0);
   });
+  // Create Booking
   test("Test2: Create Booking", async ({ request }) => {
     const response = await request.post("/booking", {
       data: {
@@ -45,6 +45,7 @@ test.describe.serial("API request", () => {
     expect(json.booking.firstname).toBe("John Haris");
     bookingId = json.bookingid;
   });
+  // Get Booking
   test("Test3: Get booking by id", async ({ request }) => {
     const response = await request.get(`/booking/${bookingId}`);
     expect(response.status()).toBe(200);
@@ -53,6 +54,7 @@ test.describe.serial("API request", () => {
     expect(json.firstname).toBeTruthy();
     expect(json.lastname).toBe("Doe");
   });
+  // Update Booking
   test("Test4: Update Booking", async ({ request }) => {
     const response = await request.put(`/booking/${bookingId}`, {
       data: {
@@ -77,6 +79,7 @@ test.describe.serial("API request", () => {
     expect(response.status()).toBe(200);
     expect(json.firstname).toBe("John Fries");
   });
+  // Delete Booking
   test("Test5: Delete Booking", async ({ request }) => {
     const response = await request.delete(`/booking/${bookingId}`, {
       headers: {
