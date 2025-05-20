@@ -134,7 +134,7 @@ test.describe.serial("API request", () => {
     expect(response.status()).toBe(apidData.serverErrorStatusCode);
   });
   //create new booking setting lastname to a number rather than a string
-  test.only("Test11: Create new booking setting lastname to a number rather than a string", async ({
+  test("Test11: Create new booking setting lastname to a number rather than a string", async ({
     request,
   }) => {
     const response = await request.post("/booking", {
