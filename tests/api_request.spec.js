@@ -47,6 +47,10 @@ test.describe.serial("API request", () => {
   });
   // Update Booking
   test("Test4: Update Booking", async ({ request }) => {
+    console.log("=================================");
+
+    console.log(bookingId);
+    console.log(token);
     const response = await request.put(`/booking/${bookingId}`, {
       data: apidData.updateBookingData,
       headers: {
