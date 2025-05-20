@@ -138,11 +138,30 @@ test.describe.serial("API request", () => {
     expect(response.status()).toBe(500);
   });
   //create new booking with an empty payload
-  test.only("Test10: Create new booking with an empty payload", async ({
+  test("Test10: Create new booking with an empty payload", async ({
     request,
   }) => {
     const response = await request.post("/booking", {
       data: {},
+    });
+    expect(response.status()).toBe(500);
+  });
+  //create new booking setting lastname to a number rather than a string
+  test.only("Test11: Create new booking setting lastname to a number rather than a string", async ({
+    request,
+  }) => {
+    const response = await request.post("/booking", {
+      data: {
+        firstname: "John",
+        lastname: 123,
+        totalprice: 111,
+        depositpaid: true,
+        bookingdates: {
+          checkin: "2018-01-01",
+          checkout: "2019-01-01",
+        },
+        additionalneeds: "Breakfast",
+      },
     });
     expect(response.status()).toBe(500);
   });
