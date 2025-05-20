@@ -4,8 +4,8 @@ if (process.env.NODE_ENV !== "ci") {
   dotenv.config();
 }
 export const apidData = {
-  username: process.env.API_USERNAME,
-  password: process.env.API_PASSWORD,
+  username: process.env.USERNAME,
+  password: process.env.PASSWORD,
   createBookingData: {
     firstname: "John Haris",
     lastname: "Doe",
