@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("API request", () => {
+test.describe.serial("API request", () => {
   //
   let token = "";
-  test("Test1:Create Authorization Token", async ({ request }) => {
+  let bookingId = 0;
+
+  test.beforeAll(async ({ request }) => {
     const response = await request.post("/auth", {
       data: {
         username: "admin",
@@ -18,23 +20,16 @@ test.describe("API request", () => {
     token = json.token;
   });
 
-  test("Test2: Get Booking ids", async ({ request }) => {
+  test("Test1: Get Booking ids", async ({ request }) => {
     const response = await request.get("/booking");
     expect(response.ok()).toBeTruthy();
     const json = await response.json();
-    console.log(json);
     expect(json.length).toBeGreaterThan(0);
   });
-  test("Test3: Get booking by id", async ({ request }) => {
-    const response = await request.get(`/booking/714`);
-    expect(response.ok()).toBeTruthy();
-    const json = await response.json();
-    console.log(json);
-  });
-  test.only("Test4: Create Booking", async ({ request }) => {
+  test("Test2: Create Booking", async ({ request }) => {
     const response = await request.post("/booking", {
       data: {
-        firstname: "John",
+        firstname: "John Haris",
         lastname: "Doe",
         totalprice: 111,
         depositpaid: true,
@@ -47,6 +42,48 @@ test.describe("API request", () => {
     });
     expect(response.ok()).toBeTruthy();
     const json = await response.json();
-    console.log(json);
+    expect(json.booking.firstname).toBe("John Haris");
+    bookingId = json.bookingid;
+  });
+  test("Test3: Get booking by id", async ({ request }) => {
+    const response = await request.get(`/booking/${bookingId}`);
+    expect(response.status()).toBe(200);
+    expect(response.ok()).toBeTruthy();
+    const json = await response.json();
+    expect(json.firstname).toBeTruthy();
+    expect(json.lastname).toBe("Doe");
+  });
+  test("Test4: Update Booking", async ({ request }) => {
+    const response = await request.put(`/booking/${bookingId}`, {
+      data: {
+        firstname: "John Fries",
+        lastname: "Doe",
+        totalprice: 1114,
+        depositpaid: true,
+        bookingdates: {
+          checkin: "2018-01-01",
+          checkout: "2019-01-01",
+        },
+        additionalneeds: "Breakfast",
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Cookie: `token=${token}`,
+      },
+    });
+    const json = await response.json();
+    expect(response.ok()).toBeTruthy();
+    expect(response.status()).toBe(200);
+    expect(json.firstname).toBe("John Fries");
+  });
+  test("Test5: Delete Booking", async ({ request }) => {
+    const response = await request.delete(`/booking/${bookingId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `token=${token}`,
+      },
+    });
+    expect(response.status()).toBe(201);
   });
 });
