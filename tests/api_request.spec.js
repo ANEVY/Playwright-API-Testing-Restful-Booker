@@ -93,4 +93,17 @@ test.describe.serial("API request", () => {
     const response = await request.get(`/booking/0`);
     expect(response.status()).toBe(404);
   });
+  // Update a booking that does not exist
+  test("Test7: Update a booking that does not exist", async ({ request }) => {
+    const response = await request.put(`/booking/0`, {
+      data: {
+        firstname: "John Fries",
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `token=${token}`,
+      },
+    });
+    expect(response.status()).toBe(404);
+  });
 });
