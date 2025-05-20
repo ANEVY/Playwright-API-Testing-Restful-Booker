@@ -86,4 +86,11 @@ test.describe.serial("API request", () => {
     });
     expect(response.status()).toBe(201);
   });
+  // Get booking with a non existing id
+  test.only("Test6: Get booking with a non existing id", async ({
+    request,
+  }) => {
+    const response = await request.get(`/booking/0`);
+    expect(response.status()).toBe(404);
+  });
 });
