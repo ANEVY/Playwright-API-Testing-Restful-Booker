@@ -118,4 +118,23 @@ test.describe.serial("API request", () => {
     });
     expect(response.status()).toBe(403);
   });
+  //create new booking setting firstname to an integer rather than a string
+  test("Test9: Create new booking setting firstname to an integer rather than a string", async ({
+    request,
+  }) => {
+    const response = await request.post("/booking", {
+      data: {
+        firstname: 123,
+        lastname: "Doe",
+        totalprice: 111,
+        depositpaid: true,
+        bookingdates: {
+          checkin: "2018-01-01",
+          checkout: "2019-01-01",
+        },
+        additionalneeds: "Breakfast",
+      },
+    });
+    expect(response.status()).toBe(500);
+  });
 });
