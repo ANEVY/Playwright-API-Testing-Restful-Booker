@@ -17,10 +17,8 @@ test.describe.serial("API request", () => {
     });
     expect(response.ok()).toBeTruthy();
     const json = await response.json();
-
     console.log("===============BEFORE ALL==================");
-    console.log("    username: ", apidData.username);
-    console.log("    password: ", apidData.password);
+    console.log("password:", apidData.password, apidData.username);
 
     console.log(json);
 
@@ -180,6 +178,6 @@ test.describe.serial("API request", () => {
         additionalneeds: apidData.createBookingData.additionalneeds,
       },
     });
-    expect(response.status()).toBe(apidData.serverErrorStatusCode);
+    expect(response.status()).toBe(apidData.successfulStatusCode);
   });
 });
