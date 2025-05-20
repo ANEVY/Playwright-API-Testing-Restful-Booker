@@ -21,6 +21,7 @@ export const apidData = {
     firstname: "Simon Haris",
     lastname: "Peter",
     totalprice: 311,
+    depositpaid: true,
     bookingdates: {
       checkin: "2019-01-01",
       checkout: "2020-01-01",
