@@ -165,4 +165,23 @@ test.describe.serial("API request", () => {
     });
     expect(response.status()).toBe(500);
   });
+  // Create booking setting totalprice to a string rather than a number
+  test("Test12: Create booking setting totalprice to a string rather than a number", async ({
+    request,
+  }) => {
+    const response = await request.post("/booking", {
+      data: {
+        firstname: "John",
+        lastname: "Doe",
+        totalprice: "111",
+        depositpaid: true,
+        bookingdates: {
+          checkin: "2018-01-01",
+          checkout: "2019-01-01",
+        },
+        additionalneeds: "Breakfast",
+      },
+    });
+    expect(response.status()).toBe(500);
+  });
 });
