@@ -137,4 +137,13 @@ test.describe.serial("API request", () => {
     });
     expect(response.status()).toBe(500);
   });
+  //create new booking with an empty payload
+  test.only("Test10: Create new booking with an empty payload", async ({
+    request,
+  }) => {
+    const response = await request.post("/booking", {
+      data: {},
+    });
+    expect(response.status()).toBe(500);
+  });
 });
