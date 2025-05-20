@@ -17,6 +17,13 @@ test.describe.serial("API request", () => {
     });
     expect(response.ok()).toBeTruthy();
     const json = await response.json();
+
+    console.log("===============BEFORE ALL==================");
+    console.log("    username: ", apidData.username);
+    console.log("    password: ", apidData.password);
+
+    console.log(json);
+
     token = json.token;
   });
   // Get Bookings
