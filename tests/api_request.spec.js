@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { apidData } from "../data/api-data.js";
 
 test.describe.serial("API request", () => {
   let token = "";
@@ -7,8 +8,8 @@ test.describe.serial("API request", () => {
   test.beforeAll(async ({ request }) => {
     const response = await request.post("/auth", {
       data: {
-        username: "admin",
-        password: "password123",
+        username: apidData.username,
+        password: apidData.password,
       },
       headers: {
         "Content-Type": "application/json",
@@ -28,46 +29,26 @@ test.describe.serial("API request", () => {
   // Create Booking
   test("Test2: Create Booking", async ({ request }) => {
     const response = await request.post("/booking", {
-      data: {
-        firstname: "John Haris",
-        lastname: "Doe",
-        totalprice: 111,
-        depositpaid: true,
-        bookingdates: {
-          checkin: "2018-01-01",
-          checkout: "2019-01-01",
-        },
-        additionalneeds: "Breakfast",
-      },
+      data: apidData.createBookingData,
     });
     expect(response.ok()).toBeTruthy();
     const json = await response.json();
-    expect(json.booking.firstname).toBe("John Haris");
+    expect(json.booking.firstname).toBe(apidData.createBookingData.firstname);
     bookingId = json.bookingid;
   });
   // Get Booking
   test("Test3: Get booking by id", async ({ request }) => {
     const response = await request.get(`/booking/${bookingId}`);
-    expect(response.status()).toBe(200);
+    expect(response.status()).toBe(apidData.successfulStatusCode);
     expect(response.ok()).toBeTruthy();
     const json = await response.json();
     expect(json.firstname).toBeTruthy();
-    expect(json.lastname).toBe("Doe");
+    expect(json.lastname).toBe(apidData.createBookingData.lastname);
   });
   // Update Booking
   test("Test4: Update Booking", async ({ request }) => {
     const response = await request.put(`/booking/${bookingId}`, {
-      data: {
-        firstname: "John Fries",
-        lastname: "Doe",
-        totalprice: 1114,
-        depositpaid: true,
-        bookingdates: {
-          checkin: "2018-01-01",
-          checkout: "2019-01-01",
-        },
-        additionalneeds: "Breakfast",
-      },
+      data: apidData.updateBookingData,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -76,8 +57,8 @@ test.describe.serial("API request", () => {
     });
     const json = await response.json();
     expect(response.ok()).toBeTruthy();
-    expect(response.status()).toBe(200);
-    expect(json.firstname).toBe("John Fries");
+    expect(response.status()).toBe(apidData.successfulStatusCode);
+    expect(json.firstname).toBe(apidData.updateBookingData.firstname);
   });
   // Delete Booking
   test("Test5: Delete Booking", async ({ request }) => {
@@ -87,25 +68,28 @@ test.describe.serial("API request", () => {
         Cookie: `token=${token}`,
       },
     });
-    expect(response.status()).toBe(201);
+    expect(response.status()).toBe(apidData.deleteBookingStatusCode);
   });
   // Get booking with a non existing id
   test("Test6: Get booking with a non existing id", async ({ request }) => {
-    const response = await request.get(`/booking/0`);
-    expect(response.status()).toBe(404);
+    const response = await request.get(`/booking/${apidData.invalidBookingId}`);
+    expect(response.status()).toBe(apidData.notFoundStatusCode);
   });
   // Update a booking that does not exist
   test("Test7: Update a booking that does not exist", async ({ request }) => {
-    const response = await request.put(`/booking/0`, {
-      data: {
-        firstname: "John Fries",
-      },
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: `token=${token}`,
-      },
-    });
-    expect(response.status()).toBe(400);
+    const response = await request.put(
+      `/booking/${apidData.invalidBookingId}`,
+      {
+        data: {
+          firstname: apidData.updateBookingData.firstname,
+        },
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token}`,
+        },
+      }
+    );
+    expect(response.status()).toBe(apidData.badRequestStatusCode);
   });
   // Update existing booking without setting cookie or authorisation token
   test("Test8: Update existing booking without setting cookie or authorisation token", async ({
@@ -119,7 +103,7 @@ test.describe.serial("API request", () => {
         "Content-Type": "application/json",
       },
     });
-    expect(response.status()).toBe(403);
+    expect(response.status()).toBe(apidData.unauthorizedStatusCode);
   });
   //create new booking setting firstname to an integer rather than a string
   test("Test9: Create new booking setting firstname to an integer rather than a string", async ({
@@ -127,18 +111,18 @@ test.describe.serial("API request", () => {
   }) => {
     const response = await request.post("/booking", {
       data: {
-        firstname: 123,
-        lastname: "Doe",
-        totalprice: 111,
-        depositpaid: true,
+        firstname: apidData.invalidBookingData.firstname,
+        lastname: apidData.createBookingData.lastname,
+        totalprice: apidData.createBookingData.totalprice,
+        depositpaid: apidData.createBookingData.depositpaid,
         bookingdates: {
-          checkin: "2018-01-01",
-          checkout: "2019-01-01",
+          checkin: apidData.createBookingData.bookingdates.checkin,
+          checkout: apidData.createBookingData.bookingdates.checkout,
         },
-        additionalneeds: "Breakfast",
+        additionalneeds: apidData.createBookingData.additionalneeds,
       },
     });
-    expect(response.status()).toBe(500);
+    expect(response.status()).toBe(apidData.serverErrorStatusCode);
   });
   //create new booking with an empty payload
   test("Test10: Create new booking with an empty payload", async ({
@@ -147,7 +131,7 @@ test.describe.serial("API request", () => {
     const response = await request.post("/booking", {
       data: {},
     });
-    expect(response.status()).toBe(500);
+    expect(response.status()).toBe(apidData.serverErrorStatusCode);
   });
   //create new booking setting lastname to a number rather than a string
   test.only("Test11: Create new booking setting lastname to a number rather than a string", async ({
@@ -155,18 +139,18 @@ test.describe.serial("API request", () => {
   }) => {
     const response = await request.post("/booking", {
       data: {
-        firstname: "John",
-        lastname: 123,
-        totalprice: 111,
-        depositpaid: true,
+        firstname: apidData.createBookingData.firstname,
+        lastname: apidData.invalidBookingData.lastname,
+        totalprice: apidData.createBookingData.totalprice,
+        depositpaid: apidData.createBookingData.depositpaid,
         bookingdates: {
-          checkin: "2018-01-01",
-          checkout: "2019-01-01",
+          checkin: apidData.createBookingData.bookingdates.checkin,
+          checkout: apidData.createBookingData.bookingdates.checkout,
         },
-        additionalneeds: "Breakfast",
+        additionalneeds: apidData.createBookingData.additionalneeds,
       },
     });
-    expect(response.status()).toBe(500);
+    expect(response.status()).toBe(apidData.serverErrorStatusCode);
   });
   // Create booking setting totalprice to a string rather than a number
   test("Test12: Create booking setting totalprice to a string rather than a number", async ({
@@ -174,17 +158,17 @@ test.describe.serial("API request", () => {
   }) => {
     const response = await request.post("/booking", {
       data: {
-        firstname: "John",
-        lastname: "Doe",
-        totalprice: "111",
-        depositpaid: true,
+        firstname: apidData.createBookingData.firstname,
+        lastname: apidData.createBookingData.lastname,
+        totalprice: apidData.invalidBookingData.totalprice,
+        depositpaid: apidData.createBookingData.depositpaid,
         bookingdates: {
-          checkin: "2018-01-01",
-          checkout: "2019-01-01",
+          checkin: apidData.createBookingData.bookingdates.checkin,
+          checkout: apidData.createBookingData.bookingdates.checkout,
         },
-        additionalneeds: "Breakfast",
+        additionalneeds: apidData.createBookingData.additionalneeds,
       },
     });
-    expect(response.status()).toBe(500);
+    expect(response.status()).toBe(apidData.serverErrorStatusCode);
   });
 });
