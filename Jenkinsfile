@@ -19,5 +19,11 @@ pipeline{
                 echo "Deploy completed"
             }
         }
+        stage('Release'){
+            steps{
+                
+                echo "Running release ${env.BUILD_NUMBER} on ${env.JENKINS_URL}"
+            }
+        }
     }
 }
