@@ -1,5 +1,8 @@
 pipeline{
     agent any
+    environment{
+        CI = 'true'
+    }
     stages{
         stage('Build'){
             steps{
@@ -23,6 +26,16 @@ pipeline{
             steps{
                 
                 echo "Running release ${env.BUILD_NUMBER} on ${env.JENKINS_URL}"
+            }
+        }
+        stage('Notify'){
+            environment{
+                TEST = 'true'
+            }
+            steps{
+                sh 'printenv'
+                
+                echo "Notify completed"
             }
         }
     }
