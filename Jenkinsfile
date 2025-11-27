@@ -39,4 +39,22 @@ pipeline{
             }
         }
     }
+    post{
+        always{
+            echo "Always"
+        }
+        success{
+            echo "Success"
+        }
+        failure{
+            echo "Failure"
+            mail to: 'akomboneville55@gmail.com', subject: 'Failed Pipeline', body: 'Build failed'
+        }
+        unstable{
+            echo "Unstable"
+        }
+        changed{
+            echo "Changed"
+        }
+    }
 }
