@@ -42,6 +42,7 @@ pipeline{
     post{
         always{
             echo "Always"
+            mail to: 'akomboneville55@gmail.com', subject: 'Failed Pipeline', body: 'Build failed'
         }
         success{
             echo "Success"
